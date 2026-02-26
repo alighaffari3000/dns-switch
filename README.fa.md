@@ -2,7 +2,7 @@
 
 # dns-switch &nbsp;·&nbsp; [English](README.md)
 
-اسکریپت Bash برای سوئیچ بین حالت **آزاد (DoH)** و **ملی** در سرورهای لینوکسی — با نصب و کانفیگ خودکار `dnscrypt-proxy`.
+اسکریپت Bash برای سوئیچ بین حالت **نت آزاد (DoH)** و **نت ملی** در سرورهای لینوکسی — با نصب و کانفیگ خودکار `dnscrypt-proxy`.
 
 ---
 
@@ -101,10 +101,6 @@ fallback_resolvers  = ['8.8.8.8:53', '1.1.1.1:53']
 ignore_system_dns   = true
 ```
 
----
 
-## لایسنس
-
-MIT
 
 </div>
