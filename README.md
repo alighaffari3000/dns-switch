@@ -84,18 +84,14 @@ fallback_resolvers  = ['8.8.8.8:53', '1.1.1.1:53']
 ignore_system_dns   = true
 ```
 
----
 
-## License
 
-MIT
 
----
 ---
 
 <div dir="rtl">
 
-# dns-switch
+# توضیحات فارسی
 
 اسکریپت Bash برای سوئیچ بین حالت **آزاد (DoH)** و **ملی** در سرورهای لینوکسی — با نصب و کانفیگ خودکار `dnscrypt-proxy`.
 
