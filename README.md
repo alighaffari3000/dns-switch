@@ -27,7 +27,7 @@ A Bash script to switch between **Free (DoH)** and **National** DNS modes on Lin
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/dns-switch.git
+git clone https://github.com/alighaffari3000/dns-switch..sh
 cd dns-switch
 chmod +x dns-switch.sh
 sudo ./dns-switch.sh
