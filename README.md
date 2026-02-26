@@ -1,45 +1,60 @@
-# dns-switch &nbsp;·&nbsp; [توضیحات فارسی](README.fa.md)
+# 🌐 DNS-switch &nbsp;·&nbsp; [فارسی](README.fa.md)
 
-A Bash script to switch between **Free (DoH)** and **National** DNS modes on Linux servers — with automatic `dnscrypt-proxy` installation and configuration.
+**dns-switch** is a fast, smart Bash script designed to help Linux servers bypass internet restrictions, censorship, and DNS manipulations. It allows you to seamlessly switch between **Free Mode (Encrypted DNS)** and **National Mode (Local/Internal DNS)**.
 
----
-
-## Why DoH?
-
-When you type a domain name like `google.com`, your device sends a DNS query to resolve it to an IP address. By default, this query travels in **plain text** — meaning your ISP, network admin, or anyone monitoring traffic can see every domain you visit, even if the page itself is HTTPS.
-
-**DNS over HTTPS (DoH)** solves this by wrapping DNS queries inside encrypted HTTPS traffic. The result:
-
-- 🔒 Your DNS queries are **encrypted** and indistinguishable from normal web traffic
-- 🕵️ Your ISP **cannot log or monitor** which domains you're visiting
-- 🚫 DNS-based censorship and filtering becomes much harder to enforce
-- 🛡️ Protection against **DNS spoofing** and man-in-the-middle attacks
-
-This is especially relevant on servers hosted in restricted network environments, where plain DNS queries are routinely intercepted or manipulated.
+When you're dealing with restricted networks where plain DNS requests are intercepted or spoofed, this script is your server's lifesaver!
 
 ---
 
-## Features
+## 🧐 Why do we need this script?
 
-- 🔄 Switch between DoH (encrypted) and National DNS modes
-- 📦 Auto-installs `dnscrypt-proxy` if not present (via `apt` or GitHub binary)
-- ⚙️ Automatically configures `dnscrypt-proxy` and `systemd-resolved`
-- 🧪 Auto-detects best mode based on connectivity
-- 🌐 Tests international connectivity with fallback to National mode
-- 🧹 Safe reset to restart DNS services and flush caches
+In many restricted internet environments, the default DNS queries your device sends to resolve domain names (like `google.com`) are transmitted in **plain text**. This means:
+- Your ISP or network administrator can see every site you visit.
+- **DNS Spoofing/Poisoning:** Networks can intercept your request and return a fake IP address, effectively blocking access to the real website or redirecting you to a block page.
 
----
-
-## Requirements
-
-- Linux (Ubuntu/Debian recommended)
-- `systemd` + `systemd-resolved`
-- `curl`, `dig`, `bash`
-- Root access
+This script provides two main solutions:
+1. **Using DoH (DNS over HTTPS)** to encrypt your requests, making them unreadable and unalterable by the network.
+2. **Fast switching to National/Local DNS** when international internet access is fully disconnected, ensuring your server remains reachable within the local intranet.
 
 ---
 
-## Installation
+## 🛡️ What is DNS over HTTPS (DoH)?
+
+To put it simply:
+- **Normal DNS** is like sending a postcard. The mail carrier (ISP) and anyone along the route can read the destination and the message, or even change it!
+- **DNS over HTTPS (DoH)** is like placing that message inside a locked, encrypted safe. Your request is sent over a secure HTTPS connection.
+
+**Benefits of DoH in this script:**
+- 🔒 Your DNS queries are completely **encrypted** and indistinguishable from regular web traffic.
+- 🕵️ Your ISP **cannot log or monitor** which domains you are querying.
+- 🚫 It easily bypasses DNS-based censorship and filtering.
+- 🛡️ Protects against Man-in-the-Middle (MitM) attacks and DNS spoofing.
+
+---
+
+## 🚀 Key Features
+
+- 🔄 **One-Click Switch:** Instantly toggle between global (encrypted) and national (local) network modes.
+- 🤖 **Smart & Automated (Auto Mode):** Tests your connection and automatically picks the most reliable mode for your server.
+- 📦 **Zero-Hassle `dnscrypt-proxy` Setup:** If you don't have the encryption tool installed, the script downloads, installs, and configures it automatically (via `apt` or GitHub binary).
+- ⚙️ **System Configuration:** Automatically handles all the complex `systemd-resolved` settings without your intervention.
+- 🧹 **Safe Reset:** Easily flush DNS caches and restart services to fix sudden network glitches.
+
+---
+
+## 🛠️ Prerequisites
+
+To run this tool, you need:
+- A Linux operating system (preferably **Ubuntu** or **Debian**)
+- `systemd` and `systemd-resolved` enabled (default on most modern distros)
+- Basic tools installed: `curl`, `dig`, `bash`
+- **Root** privileges (or a user with `sudo` permissions)
+
+---
+
+## 📥 Installation & Usage
+
+Just run the following commands in your server's terminal:
 
 ```bash
 wget https://raw.githubusercontent.com/alighaffari3000/dns-switch/main/dns-switch.sh
@@ -49,48 +64,34 @@ sudo ./dns-switch.sh
 
 ---
 
-## Usage
+## 🎮 Menu Guide
 
-Run the script as root:
+Upon running the script with root access, you'll see a menu with the following options:
 
-```bash
-sudo ./dns-switch.sh
-```
-
-### Menu Options
-
-| Option | Description |
-|--------|-------------|
-| `1` | Switch to **FREE mode** — DNS over HTTPS via dnscrypt-proxy |
-| `2` | Switch to **NATIONAL mode** — Auto-selects best working national DNS |
-| `3` | **Auto-select** — Tests connectivity and picks the best mode |
-| `4` | **Safe reset** — Restarts DNS services and flushes cache |
-| `5` | **Run tests** — Checks DNS resolution and HTTPS connectivity |
-| `0` | Exit |
+| Option | Name | Description & Use Case |
+|--------|------|------------------------|
+| `1` | **FREE Mode (DoH)** | Encrypts all your server's DNS requests. Use this for unrestricted access to global services (GitHub, Docker, Google, etc.). |
+| `2` | **NATIONAL Mode** | The script automatically tests a list of internal/national DNS servers and connects to the fastest ones responding. Perfect for when international internet is down. |
+| `3` | **AUTO Mode** | The script tests the internet itself. If the global web is reachable, it activates Free Mode. If not, it falls back to National Mode. |
+| `4` | **Safe Reset** | Restarts network settings and flushes the DNS cache. Always try this first if a site isn't loading! |
+| `5` | **Run Tests** | Checks the server's connection to the global internet and tests DNS performance, giving you a health report. |
+| `0` | **Exit** | Closes the script. |
 
 ---
 
-## How It Works
+## ⚙️ How It Works Under the Hood
 
-### FREE Mode (DoH)
-1. Checks if `dnscrypt-proxy` is installed — installs it automatically if not
-2. Writes a clean config with `cloudflare`, `google`, and `quad9-doh` as upstream resolvers
-3. Disables systemd socket activation (fixes port conflict on apt-installed versions)
-4. Configures `systemd-resolved` to forward DNS queries to `127.0.0.1:5053`
+- **In FREE Mode (DoH):**
+  The script configures `dnscrypt-proxy` to use trusted upstream resolvers (like Cloudflare, Google, and Quad9). It disables conflicting systemd socket activations and forces `systemd-resolved` to forward queries to locally hosted proxy on `127.0.0.1:5053`.
 
-### NATIONAL Mode
-1. Stops `dnscrypt-proxy`
-2. Tests all DNS servers in the list and picks the first 2 that respond
-3. Configures `systemd-resolved` to use them directly
-
-### Auto Mode
-1. Installs and starts `dnscrypt-proxy`
-2. Runs 3 connectivity tests
-3. Stays in FREE mode if international access works — otherwise falls back to NATIONAL
+- **In NATIONAL Mode:**
+  The script gracefully stops `dnscrypt-proxy` and pings a comprehensive list of internal DNS servers. It picks the first two servers that respond successfully and applies them directly to `systemd-resolved` and `/etc/resolv.conf`.
 
 ---
 
-## dnscrypt-proxy Config (Default)
+## 📝 Default dnscrypt-proxy Configuration
+
+If you're curious, the script applies the following robust configuration to bypass restrictions during installation:
 
 ```toml
 listen_addresses    = ['127.0.0.1:5053']
@@ -98,5 +99,4 @@ server_names        = ['cloudflare', 'google', 'quad9-doh']
 fallback_resolvers  = ['8.8.8.8:53', '1.1.1.1:53']
 ignore_system_dns   = true
 ```
-
 
